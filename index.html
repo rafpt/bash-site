@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="bash AI — AI-Powered Cybersecurity Advisory. Virtual CISO, Agentic AI SOC, Security Automation & Governance for digital businesses.">
+    <meta name="description" content="BASH — AI-Powered Cybersecurity Advisory. Virtual CISO, Agentic AI SOC, Security Automation & Governance for digital businesses.">
     <meta name="keywords" content="AI security, virtual CISO, agentic AI, SOC, ML security, observability, automation, IAM, GRC, NIS2, GDPR, penetration testing, Portugal">
     <meta name="author" content="Rui Alexandre Ferreira">
-    <title>bash AI — AI-Powered Cybersecurity Advisory</title>
+    <title>BASH — AI-Powered Cybersecurity Advisory</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-    <meta property="og:title" content="bash AI — AI-Powered Cybersecurity Advisory">
+    <meta property="og:title" content="BASH — AI-Powered Cybersecurity Advisory">
     <meta property="og:description" content="Virtual CISO, Agentic AI SOC, Security Automation & Governance for digital businesses. 25+ years of enterprise security leadership.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://bash.pt">
@@ -217,8 +217,7 @@
         .contact-methods { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem; }
         .contact-method { display: flex; align-items: center; gap: 0.75rem; padding: 1rem 1.5rem; background: var(--gradient-card); border: 1px solid var(--dark-border); border-radius: 12px; text-decoration: none; color: var(--text-primary); transition: all 0.3s; }
         .contact-method:hover { border-color: var(--accent); transform: translateY(-2px); }
-        .contact-method-icon { font-size: 1.25rem; }
-        .contact-method-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+.contact-method-label { font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
         .contact-method-value { font-weight: 500; font-size: 0.95rem; }
 
 
@@ -254,7 +253,7 @@
 
     <!-- NAV -->
     <nav id="navbar">
-        <a href="#" class="nav-logo"><img src="bash-logo.png" alt="bash AI" height="36"></a>
+        <a href="#" class="nav-logo"><img src="bash-logo.png" alt="BASH" height="36"></a>
         <ul class="nav-links" id="navLinks">
             <li><a href="#services" data-lang="en">Services</a><a href="#services" data-lang="pt">Serviços</a></li>
             <li><a href="#expertise" data-lang="en">Expertise</a><a href="#expertise" data-lang="pt">Especialização</a></li>
@@ -528,13 +527,179 @@
 
             <div class="contact-methods">
                 <a href="mailto:contact@bash.pt" class="contact-method reveal">
-                    <div class="contact-method-icon">&#9993;</div>
                     <div><div class="contact-method-label">Email</div><div class="contact-method-value">contact@bash.pt</div></div>
                 </a>
             </div>
         </div>
     </section>
 
+
+    <!-- ASPASIA CHAT WIDGET -->
+    <div id="aspasia-widget">
+        <div id="aspasia-toggle" onclick="toggleAspasia()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div id="aspasia-chat" style="display:none;">
+            <div id="aspasia-header">
+                <span data-lang="pt">Aspasia — Fale Connosco</span><span data-lang="en">Aspasia — Talk to Us</span>
+                <button onclick="toggleAspasia()" id="aspasia-close">&times;</button>
+            </div>
+            <div id="aspasia-messages"></div>
+            <div id="aspasia-input-area">
+                <input type="text" id="aspasia-input" data-placeholder-pt="Escreva a sua mensagem..." data-placeholder-en="Type your message..." placeholder="Escreva a sua mensagem..." onkeydown="if(event.key==='Enter')sendAspasia()">
+                <button onclick="sendAspasia()" id="aspasia-send">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    <style>
+        /* ── ASPASIA WIDGET ── */
+        #aspasia-toggle {
+            position: fixed; bottom: 24px; right: 24px; z-index: 9999;
+            width: 56px; height: 56px; border-radius: 50%;
+            background: linear-gradient(135deg, #4A5DA6, #00D4AA);
+            color: #fff; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 4px 20px rgba(0,212,170,0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        #aspasia-toggle:hover { transform: scale(1.1); box-shadow: 0 6px 30px rgba(0,212,170,0.45); }
+        #aspasia-chat {
+            position: fixed; bottom: 90px; right: 24px; z-index: 9999;
+            width: 370px; height: 500px; border-radius: 16px; overflow: hidden;
+            background: #0A0E1A; border: 1px solid #1E2540;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            display: flex; flex-direction: column;
+            font-family: 'Inter', -apple-system, sans-serif;
+        }
+        #aspasia-header {
+            background: linear-gradient(135deg, #4A5DA6, #00D4AA);
+            color: #fff; padding: 14px 16px; font-size: 0.9rem; font-weight: 600;
+            display: flex; justify-content: space-between; align-items: center;
+            letter-spacing: 0.3px;
+        }
+        #aspasia-close {
+            background: none; border: none; color: #fff; font-size: 1.4rem;
+            cursor: pointer; line-height: 1; padding: 0 4px; opacity: 0.8;
+        }
+        #aspasia-close:hover { opacity: 1; }
+        #aspasia-messages {
+            flex: 1; overflow-y: auto; padding: 16px;
+            display: flex; flex-direction: column; gap: 10px;
+            scrollbar-width: thin; scrollbar-color: #1E2540 transparent;
+        }
+        #aspasia-messages::-webkit-scrollbar { width: 6px; }
+        #aspasia-messages::-webkit-scrollbar-thumb { background: #1E2540; border-radius: 3px; }
+        .aspasia-msg {
+            max-width: 85%; padding: 10px 14px; border-radius: 12px;
+            font-size: 0.88rem; line-height: 1.5; word-wrap: break-word;
+        }
+        .aspasia-msg.user {
+            align-self: flex-end; background: linear-gradient(135deg, #4A5DA6, #2C3A6E);
+            color: #F0F2FF; border-bottom-right-radius: 4px;
+        }
+        .aspasia-msg.bot {
+            align-self: flex-start; background: #111627; color: #8B92B3;
+            border: 1px solid #1E2540; border-bottom-left-radius: 4px;
+        }
+        .aspasia-msg.bot strong { color: #F0F2FF; }
+        .aspasia-typing { align-self: flex-start; color: #5A6180; font-size: 0.82rem; font-style: italic; padding: 6px 0; }
+        #aspasia-input-area {
+            display: flex; gap: 8px; padding: 12px 14px;
+            background: #111627; border-top: 1px solid #1E2540;
+        }
+        #aspasia-input {
+            flex: 1; background: #0A0E1A; border: 1px solid #1E2540; border-radius: 8px;
+            padding: 10px 12px; color: #F0F2FF; font-size: 0.88rem;
+            font-family: inherit; outline: none; transition: border-color 0.3s;
+        }
+        #aspasia-input::placeholder { color: #5A6180; }
+        #aspasia-input:focus { border-color: #4A5DA6; }
+        #aspasia-send {
+            background: linear-gradient(135deg, #4A5DA6, #00D4AA); border: none;
+            border-radius: 8px; width: 40px; height: 40px; color: #fff;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.3s;
+        }
+        #aspasia-send:hover { opacity: 0.85; }
+        @media (max-width: 480px) {
+            #aspasia-chat { width: calc(100vw - 32px); right: 16px; bottom: 80px; height: 60vh; }
+            #aspasia-toggle { bottom: 16px; right: 16px; }
+        }
+    </style>
+    <script>
+        /* ── Aspasia Chat Logic ── */
+        var aspasiaOpen = false;
+        var aspasiaHistory = JSON.parse(sessionStorage.getItem('aspasia_history') || '[]');
+
+        function toggleAspasia() {
+            aspasiaOpen = !aspasiaOpen;
+            document.getElementById('aspasia-chat').style.display = aspasiaOpen ? 'flex' : 'none';
+            document.getElementById('aspasia-toggle').style.display = aspasiaOpen ? 'none' : 'flex';
+            if (aspasiaOpen && aspasiaHistory.length === 0) {
+                var isPT = document.body.classList.contains('lang-pt');
+                addAspasiaMsg('bot', isPT ? 'Olá! Sou a Aspasia, assistente da BASH. Como posso ajudar?' : 'Hello! I\'m Aspasia, BASH\'s assistant. How can I help?');
+            }
+            if (aspasiaOpen) document.getElementById('aspasia-input').focus();
+        }
+
+        function addAspasiaMsg(role, text) {
+            var container = document.getElementById('aspasia-messages');
+            var div = document.createElement('div');
+            div.className = 'aspasia-msg ' + role;
+            div.innerHTML = text;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+            aspasiaHistory.push({ role: role, text: text });
+            sessionStorage.setItem('aspasia_history', JSON.stringify(aspasiaHistory));
+        }
+
+        function sendAspasia() {
+            var input = document.getElementById('aspasia-input');
+            var msg = input.value.trim();
+            if (!msg) return;
+            input.value = '';
+            addAspasiaMsg('user', msg);
+
+            var isPT = document.body.classList.contains('lang-pt');
+            var lang = isPT ? 'pt' : 'en';
+
+            var typing = document.createElement('div');
+            typing.className = 'aspasia-typing';
+            typing.textContent = isPT ? 'Aspasia está a escrever...' : 'Aspasia is typing...';
+            var container = document.getElementById('aspasia-messages');
+            container.appendChild(typing);
+            container.scrollTop = container.scrollHeight;
+
+            var langInstruction = isPT ? '[Responde em Português de Portugal] ' : '[Respond in English] ';
+
+            fetch('https://aspasia-bot.vercel.app/api/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: langInstruction + msg, language: lang })
+            })
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                if (typing.parentNode) typing.parentNode.removeChild(typing);
+                addAspasiaMsg('bot', data.response || data.reply || data.message || (isPT ? 'Desculpe, não consegui processar o seu pedido.' : 'Sorry, I could not process your request.'));
+            })
+            .catch(function() {
+                if (typing.parentNode) typing.parentNode.removeChild(typing);
+                addAspasiaMsg('bot', isPT ? 'Erro de ligação. Tente novamente mais tarde.' : 'Connection error. Please try again later.');
+            });
+        }
+
+        /* Restore session history on load */
+        (function() {
+            var container = document.getElementById('aspasia-messages');
+            aspasiaHistory.forEach(function(m) {
+                var div = document.createElement('div');
+                div.className = 'aspasia-msg ' + m.role;
+                div.innerHTML = m.text;
+                container.appendChild(div);
+            });
+        })();
+    </script>
 
     <!-- SCRIPTS -->
     <script>
@@ -543,6 +708,8 @@
             else { document.body.classList.remove('lang-pt'); document.documentElement.lang = 'en'; }
             document.getElementById('btnEN').classList.toggle('active', lang === 'en');
             document.getElementById('btnPT').classList.toggle('active', lang === 'pt');
+            var aspInput = document.getElementById('aspasia-input');
+            if (aspInput) aspInput.placeholder = aspInput.getAttribute('data-placeholder-' + lang) || aspInput.placeholder;
             document.querySelectorAll('.reveal').forEach(function(el) {
                 if (el.getBoundingClientRect().top < window.innerHeight - 50) el.classList.add('visible');
             });
