@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- Restricted: noindex while site is in construction -->
+    <meta name="robots" content="noindex, nofollow">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="BASH — AI-Powered Cybersecurity Advisory. Virtual CISO, Agentic AI SOC, Security Automation & Governance for digital businesses.">
@@ -248,8 +250,120 @@
         body.lang-pt a[data-lang="pt"] { display: inline-flex; }
         body.lang-pt a[data-lang="en"] { display: none; }
     </style>
+
+    <!-- ── Gate UI Styles ── -->
+    <style>
+        #bash-gate {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            min-height: 100vh; width: 100%; padding: 2rem;
+            background: radial-gradient(ellipse at 50% 0%, rgba(74,93,166,0.12) 0%, transparent 60%), #0A0E1A;
+            position: fixed; top: 0; left: 0; z-index: 99999;
+        }
+        .gate-logo {
+            display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+            margin-bottom: 3rem;
+        }
+        .gate-logo img { height: 56px; opacity: 0.9; }
+        .gate-logo-text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem; font-weight: 700; color: #F0F2FF;
+            letter-spacing: 6px; text-transform: uppercase;
+        }
+        .gate-card {
+            background: #111627;
+            border: 1px solid #1E2540;
+            border-radius: 16px;
+            padding: 2.5rem;
+            width: 100%; max-width: 400px;
+            text-align: center;
+        }
+        .gate-lock {
+            font-size: 2.5rem; margin-bottom: 1.25rem;
+            display: block;
+        }
+        .gate-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1.25rem; font-weight: 600;
+            color: #F0F2FF; margin-bottom: 0.5rem;
+        }
+        .gate-sub {
+            font-size: 0.85rem; color: #5A6180;
+            margin-bottom: 2rem; line-height: 1.5;
+        }
+        .gate-input {
+            width: 100%; padding: 0.85rem 1rem;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid #1E2540;
+            border-radius: 8px; color: #F0F2FF;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 1rem; letter-spacing: 2px;
+            text-align: center; outline: none;
+            transition: border-color 0.3s;
+            margin-bottom: 1rem;
+        }
+        .gate-input:focus { border-color: #4A5DA6; }
+        .gate-input.error { border-color: #E05252; animation: gate-shake 0.4s ease; }
+        @keyframes gate-shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-5px); }
+            80% { transform: translateX(5px); }
+        }
+        .gate-btn {
+            width: 100%; padding: 0.85rem;
+            background: linear-gradient(135deg, #4A5DA6, #00D4AA);
+            border: none; border-radius: 8px;
+            color: white; font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.9rem; font-weight: 600; letter-spacing: 1px;
+            cursor: pointer; transition: opacity 0.3s;
+        }
+        .gate-btn:hover { opacity: 0.88; }
+        .gate-error {
+            font-size: 0.8rem; color: #E05252;
+            margin-top: 0.75rem; min-height: 1.2em;
+        }
+        .gate-footer {
+            margin-top: 2.5rem; font-size: 0.75rem;
+            color: #5A6180; letter-spacing: 0.5px;
+        }
+        #bash-site { display: none; }
+    </style>
+    <script>
+        // Immediate auth check — prevent gate flash on authenticated reload
+        (function() {
+            try {
+                if (sessionStorage.getItem('bash_auth') === 'ok') {
+                    document.documentElement.style.visibility = 'hidden';
+                }
+            } catch(e) {}
+        })();
+    </script>
 </head>
 <body>
+
+<!-- ── GATE ── -->
+<div id="bash-gate">
+    <div class="gate-logo">
+        <img src="bash-logo.png" alt="BASH">
+        <span class="gate-logo-text">BASH</span>
+    </div>
+    <div class="gate-card">
+        <span class="gate-lock">&#128274;</span>
+        <div class="gate-title">Acesso Restrito</div>
+        <div class="gate-sub">Site em construção.<br>Acesso autorizado apenas.</div>
+        <input type="password" id="gate-pwd" class="gate-input"
+               placeholder="Password"
+               onkeydown="if(event.key==='Enter')checkGate()"
+               autocomplete="current-password">
+        <button class="gate-btn" onclick="checkGate()">ENTRAR</button>
+        <div class="gate-error" id="gate-err"></div>
+    </div>
+    <div class="gate-footer">bash.pt &mdash; &copy; 2026 BASH</div>
+</div>
+
+<!-- ── SITE (hidden until auth) ── -->
+<div id="bash-site">
 
     <!-- NAV -->
     <nav id="navbar">
@@ -751,5 +865,46 @@
         }, { threshold: 0.3 });
         var ms = document.querySelector('.metrics'); if (ms) mo.observe(ms);
     </script>
+</div>
+
+<!-- ── GATE AUTH SCRIPT ── -->
+<script>
+    var _H = '2ebe178f053f7bab64431f77531f56d7367a15f766319ef4718236a65a0906a1';
+
+    async function sha256(str) {
+        var buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+        return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');
+    }
+
+    async function checkGate() {
+        var pwd = document.getElementById('gate-pwd').value;
+        if (!pwd) return;
+        var h = await sha256(pwd);
+        if (h === _H) {
+            try { sessionStorage.setItem('bash_auth', 'ok'); } catch(e) {}
+            document.getElementById('bash-gate').style.display = 'none';
+            document.getElementById('bash-site').style.display = 'block';
+        } else {
+            var inp = document.getElementById('gate-pwd');
+            var err = document.getElementById('gate-err');
+            inp.classList.add('error');
+            err.textContent = 'Password incorrecta.';
+            inp.value = '';
+            setTimeout(function(){ inp.classList.remove('error'); }, 500);
+        }
+    }
+
+    // Restore session or show gate
+    (function() {
+        try {
+            if (sessionStorage.getItem('bash_auth') === 'ok') {
+                document.getElementById('bash-gate').style.display = 'none';
+                document.getElementById('bash-site').style.display = 'block';
+            }
+        } catch(e) {}
+        document.documentElement.style.visibility = '';
+    })();
+</script>
+
 </body>
 </html>
